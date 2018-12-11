@@ -1,0 +1,20 @@
+files:
+ vox_celeb_splits: Data/voxceleb_split.txt
+ vox_celeb_pairs: Data/VoxCeleb1/veri_test.txt
+ vox_celeb_meta: Data/VoxCeleb1/vox1_meta.csv
+ vox_dev_wav: Data/VoxCeleb1/vox1_dev_wav/wav
+ vox_test_wav: Data/VoxCeleb1/vox1_test_wav/wav
+ weights_path: Data/model_weights/siamese_model.h5
+ log_dir: logs
+
+spectrogram:
+  sampling_rate: 16000 # Hz
+  sample_length: 0.4 # sec
+  offset: 0.1 #sec
+  fft_window: 1024 # samples
+  hop_length: 160 # samples
+
+dataset:
+  split: train-dev
+
+generator:

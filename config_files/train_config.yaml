@@ -1,0 +1,33 @@
+input_data:
+  sampling_rate: 16000
+  mel_spectrogram_x: 40
+  mel_spectrogram_y: 128
+  batch_size: 100
+  batch_shuffle: True
+  epochs: 30
+
+topology:
+  blstm1_units: 128
+
+  dropout1: 0.5
+
+  blstm2_units: 256
+
+  dense1_units: 1000 #= 10 * C_s speakers
+
+  dropout2: 0.25
+
+  dense2_units: 500 #= 5 * C_s speakers
+
+  dense3_units: 100 #= 1 * C_s speakers, for softmax equal
+
+
+  optimizer:
+    type: adam
+    learning_rate: 0.001
+    beta_1: 0.9
+    beta_2: 0.999
+    epsilon: 1e-08
+    decay: 0.0
+
+  output_layer: layer8
