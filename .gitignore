@@ -1,0 +1,30 @@
+# git ignore for agents
+
+# OSX specific
+**.DS_Store
+
+# python specific
+**/__pycache__
+__pychache__
+
+# generally unpleasant
+**/*.log
+
+logs/events*
+
+# idea folder
+**/.idea
+
+# vscode folder
+**/.vscode
+
+# wav and binary files
+Data/npy_spect/*
+Data/VoxCeleb1/vox1_dev_wav/*
+Data/VoxCeleb1/vox1_test_wav/*
+
+
+# File-based project format
+**.iws
+
+*.h5
