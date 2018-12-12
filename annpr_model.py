@@ -30,7 +30,7 @@ def build_optimizer():
     return optimizer
 
 
-def build_model():
+def build_model(mode: str = "train"):
     topology = TRAIN_CONF['topology']
 
     model = ks.Sequential()
@@ -40,6 +40,9 @@ def build_model():
     model.add(ks.layers.Dropout(topology['dropout1']))
 
     model.add(ks.layers.Bidirectional(ks.layers.LSTM(topology['blstm1_units'])))
+
+    if mode == 'extraction':
+        return model
 
     num_units = topology['dense1_units']
     model.add(ks.layers.Dense(num_units, name='dense_1'))
@@ -84,7 +87,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
 
     training_generator = DataGenerator(train_set, INPUT_DIMS, batch_size)
 
-    val_data = DataGenerator.generate_batch(dev_set, batch_size, INPUT_DIMS[0], INPUT_DIMS[1], np.random.RandomState(1))
+    val_data = DataGenerator.generate_batch(dev_set, batch_size, INPUT_DIMS[0], INPUT_DIMS[1])
 
     annpr = build_model()
     annpr.summary()
