@@ -2,7 +2,7 @@ input_data:
   sampling_rate: 16000
   mel_spectrogram_x: 40
   mel_spectrogram_y: 128
-  batch_size: 100
+  batch_size: 64
   batch_shuffle: True
   epochs: 30
 
@@ -11,20 +11,22 @@ topology:
 
   dropout1: 0.5
 
-  blstm2_units: 256
+  blstm2_units: 128
 
-  dense1_units: 1000 #= 10 * C_s speakers
+  dense1_units: 1024
 
   dropout2: 0.25
 
-  dense2_units: 500 #= 5 * C_s speakers
+  dense2_units: 512 # timit setting: 5 * 40 speakers
 
-  dense3_units: 100 #= 1 * C_s speakers, for softmax equal
+  dense3_units: 256 # timit setting: 40 speakers
+
+  dense4_units: 128
 
 
   optimizer:
     type: adam
-    learning_rate: 0.001
+    learning_rate: 0.01
     beta_1: 0.9
     beta_2: 0.999
     epsilon: 1e-08
