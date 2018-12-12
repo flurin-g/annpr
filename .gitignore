@@ -23,8 +23,12 @@ Data/npy_spect/*
 Data/VoxCeleb1/vox1_dev_wav/*
 Data/VoxCeleb1/vox1_test_wav/*
 
+*.wav
+*.npy
+
 
 # File-based project format
 **.iws
 
 *.h5
+*.hdf5
