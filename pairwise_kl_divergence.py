@@ -5,6 +5,9 @@
     Work of Gerber and Glinski.
 """
 import tensorflow as tf
+from definitions import TRAIN_CONF
+
+BATCH_SIZE = TRAIN_CONF['input_data']['batch_size']
 
 tf_l = tf.Variable(0., name='loss')
 x = tf.constant(0.)
@@ -17,14 +20,14 @@ def pairwise_kl_divergence(labels, predictions):
     x = tf.constant(0)
     sum_loss = tf.while_loop(outerLoop_condition, outerLoop, [x, tf_l, predictions, labels, margin], swap_memory=True,
                              parallel_iterations=10, name='outerloop')
-    n = tf.constant(100.)
+    n = tf.constant(float(BATCH_SIZE))
     pairs = tf.multiply(n, tf.divide(tf.subtract(n, tf.constant(1.)), tf.constant(2.)))
     loss = tf.divide(sum_loss[1], pairs)
     return loss
 
 
 def outerLoop_condition(x, tf_l, predictions, labels, margin):
-    return tf.less(x, tf.constant(100))
+    return tf.less(x, tf.constant(BATCH_SIZE))
 
 
 def outerLoop(x, tf_l, predictions, labels, margin):
@@ -36,7 +39,7 @@ def outerLoop(x, tf_l, predictions, labels, margin):
         return y, x, tf_l, predictions, labels, margin
 
     def innerLoop_cond(y, x, tf_l, predictions, labels, margin):
-        return tf.less(y, tf.constant(100))
+        return tf.less(y, tf.constant(BATCH_SIZE))
 
     y = tf.constant(0)
     res = tf.while_loop(innerLoop_cond, innerLoop, [y, x, tf_l, predictions, labels, margin], swap_memory=True,

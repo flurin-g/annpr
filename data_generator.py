@@ -1,5 +1,4 @@
 import pandas as pd
-import re
 import numpy as np
 from keras.utils import Sequence
 
@@ -19,8 +18,7 @@ class DataGenerator(Sequence):
         for i in range(batch_size):
             pos = df.iloc[start_idx + i]
             X[i, ] = np.load(pos.spectrogram_path)
-            speaker_id = re.sub('[^0-9]', '', pos.speaker_id)
-            y[i] = speaker_id
+            y[i] = pos.speaker_id_encoded
         return X, y
 
     def __len__(self):

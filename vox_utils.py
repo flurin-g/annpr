@@ -1,14 +1,29 @@
 import os
+import pickle
 
 import librosa as lr
 import numpy as np
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 from definitions import GLOBAL_CONF
 
 TRAIN = 1
 DEV = 2
 TEST = 3
+
+ENCODER_FILE = 'encoder.pickle'
+
+
+def load_encoder():
+    with open(ENCODER_FILE, 'rb') as f:
+        label_encoder = pickle.load(f)
+        return label_encoder
+
+
+def save_encoder(encoder):
+    with open(ENCODER_FILE, 'wb') as f:
+        pickle.dump(encoder, f)
 
 
 def get_path(name: str) -> str:
@@ -58,6 +73,7 @@ def get_dataset(build_spectrograms=False) -> pd.DataFrame:
     :return: DataFrame containing dataset with metadata and filepaths
     """
     configs = GLOBAL_CONF
+    encoder = LabelEncoder()
 
     meta = pd.read_csv(
         configs['files']['vox_celeb_meta'],
@@ -74,7 +90,12 @@ def get_dataset(build_spectrograms=False) -> pd.DataFrame:
         header=None
     )
 
-    splits['speaker_id'] = splits['path'].apply(lambda p: p.split('/')[0])
+    speaker_id_in_path_index = 0
+    if 'dialect_region' in meta:
+        speaker_id_in_path_index = 1
+
+    splits['speaker_id'] = splits['path'].apply(lambda p: p.split('/')[speaker_id_in_path_index])
+    splits['speaker_id_encoded'] = encoder.fit_transform(splits.speaker_id.values)
     splits['wav_path'] = splits.apply(
         lambda r: get_wav_path(r['split'], r['path']),
         axis='columns'
@@ -83,6 +104,10 @@ def get_dataset(build_spectrograms=False) -> pd.DataFrame:
     dataset = pd.merge(splits, meta, how='left', on='speaker_id', validate="m:1")
 
     dataset['spectrogram_path'] = dataset['wav_path'].apply(lambda p: p + '.npy')
+
+    if 'dialect_region' in dataset:
+        dataset['Gender'] = dataset.dialect_region
+        dataset['Nationality'] = dataset.dialect_region
 
     mel_config = configs['spectrogram']
     if build_spectrograms:
@@ -98,6 +123,8 @@ def get_dataset(build_spectrograms=False) -> pd.DataFrame:
                                                      mel_config['hop_length'])
 
                 persist_spectrogram(mel_spectrogram, spectrogram_path)
+
+    save_encoder(encoder)
 
     return dataset
 
