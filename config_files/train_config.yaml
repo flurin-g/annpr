@@ -11,7 +11,7 @@ topology:
 
   dropout1: 0.5
 
-  blstm2_units: 128
+  blstm2_units: 256
 
   dense1_units: 1024
 
