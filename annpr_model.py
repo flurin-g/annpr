@@ -42,12 +42,12 @@ def build_model(mode: str = "train"):
     is_gpu = tf.test.is_gpu_available(cuda_only=True)
 
     model = ks.Sequential()
-    model.add(ks.layers.Bidirectional(ks.layers.Bidirectional(create_lstm(topology['blstm1_units'], is_gpu,name='blstm_1'), input_shape=INPUT_DIMS)))
+    model.add(
+        ks.layers.Bidirectional(create_lstm(topology['blstm1_units'], is_gpu, name='blstm_1'), input_shape=INPUT_DIMS))
 
     model.add(ks.layers.Dropout(topology['dropout1']))
 
     model.add(ks.layers.Bidirectional(create_lstm(topology['blstm2_units'], is_gpu, is_sequence=False, name='blstm_2')))
-
     if mode == 'extraction':
         return model
 
@@ -80,9 +80,9 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
         ks.callbacks.ModelCheckpoint(checkpoint_pattern),
         ks.callbacks.TensorBoard(
             LOG_DIR,
-            histogram_freq=0,
+            histogram_freq=1,
             write_grads=True,
-            write_images=True,
+            write_images=False,
             write_graph=True
         )
     ]
@@ -102,7 +102,6 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
                         epochs=input_data['epochs'],
                         validation_data=val_data,
                         use_multiprocessing=True,
-                        callbacks=callbacks,
-                        workers=4)
+                        callbacks=callbacks)
 
     annpr.save_weights(weights_path, overwrite=True)
