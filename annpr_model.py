@@ -14,6 +14,13 @@ INPUT_DIMS = [TRAIN_CONF['input_data']['mel_spectrogram_x'],
               TRAIN_CONF['input_data']['mel_spectrogram_y']]
 
 
+def create_lstm(units: int, gpu: bool, name: str, is_sequence: bool = True):
+    if gpu:
+        return ks.layers.CuDNNLSTM(units, return_sequences=is_sequence, input_shape=INPUT_DIMS, name=name)
+    else:
+        return ks.layers.LSTM(units, return_sequences=is_sequence, input_shape=INPUT_DIMS, unroll=True, name=name)
+
+
 def build_optimizer():
     optimizer = None
     p = TRAIN_CONF['topology']['optimizer']
@@ -32,14 +39,14 @@ def build_optimizer():
 
 def build_model(mode: str = "train"):
     topology = TRAIN_CONF['topology']
+    is_gpu = tf.test.is_gpu_available(cuda_only=True)
 
     model = ks.Sequential()
-    model.add(ks.layers.Bidirectional(ks.layers.LSTM(topology['blstm1_units'], return_sequences=True),
-                                      input_shape=INPUT_DIMS))
+    model.add(ks.layers.Bidirectional(ks.layers.Bidirectional(create_lstm(topology['blstm1_units'], is_gpu,name='blstm_1'), input_shape=INPUT_DIMS)))
 
     model.add(ks.layers.Dropout(topology['dropout1']))
 
-    model.add(ks.layers.Bidirectional(ks.layers.LSTM(topology['blstm1_units'])))
+    model.add(ks.layers.Bidirectional(create_lstm(topology['blstm2_units'], is_gpu, is_sequence=False, name='blstm_2')))
 
     if mode == 'extraction':
         return model
@@ -73,7 +80,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
         ks.callbacks.ModelCheckpoint(checkpoint_pattern),
         ks.callbacks.TensorBoard(
             LOG_DIR,
-            histogram_freq=1,
+            histogram_freq=0,
             write_grads=True,
             write_images=True,
             write_graph=True
