@@ -99,7 +99,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
 
     num_samples = len(dev_set)
 
-    val_data = DataGenerator.generate_batch(dev_set, num_samples, INPUT_DIMS[0], INPUT_DIMS[1])
+    val_data = training_generator.generate_batch(dev_set, num_samples, INPUT_DIMS[0], INPUT_DIMS[1])
 
     annpr = build_model()
     annpr.summary()
