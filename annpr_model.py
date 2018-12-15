@@ -90,13 +90,13 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
     input_data = TRAIN_CONF['input_data']
     batch_size = input_data['batch_size']
 
-    #train_set, dev_set = get_all_sets_50m_50w(create_spectrograms)
-    train_set, dev_set, _ = get_all_sets(create_spectrograms)
+    train_set, dev_set = get_all_sets_50m_50w(create_spectrograms)
+    #train_set, dev_set, _ = get_all_sets(create_spectrograms)
 
     training_generator = DataGenerator(train_set, INPUT_DIMS, batch_size)
 
     num_samples = len(dev_set)# // batch_size
-    dev_set = dev_set.sample(num_samples)
+    #dev_set = dev_set.sample(num_samples)
 
     val_data = DataGenerator.generate_batch(dev_set, num_samples, INPUT_DIMS[0], INPUT_DIMS[1])
 
