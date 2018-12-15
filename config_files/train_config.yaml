@@ -13,13 +13,13 @@ topology:
 
   blstm2_units: 256
 
-  dense1_units: 1024
+  dense1_units: 1000 # timit setting: 10 * num_speakers
 
   dropout2: 0.25
 
-  dense2_units: 512 # timit setting: 5 * 40 speakers
+  dense2_units: 500 # timit setting: 5 * _num_speakers
 
-  dense3_units: 256 # timit setting: 40 speakers
+  dense3_units: 100 # timit setting: num_speakers
 
   dense4_units: 128
 
