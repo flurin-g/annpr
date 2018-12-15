@@ -94,9 +94,6 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
 
     training_generator = DataGenerator(train_set, INPUT_DIMS, batch_size)
 
-    cut_off = len(dev_set) % batch_size
-    dev_set.drop(dev_set.index[:cut_off], inplace=True)
-
     num_samples = len(dev_set)
 
     val_data = training_generator.generate_batch(dev_set, num_samples, INPUT_DIMS[0], INPUT_DIMS[1])
@@ -106,6 +103,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
     annpr.fit_generator(generator=training_generator,
                         epochs=input_data['epochs'],
                         validation_data=val_data,
+                        validation_steps=2,
                         use_multiprocessing=True,
                         callbacks=callbacks)
 

@@ -177,5 +177,7 @@ def get_all_sets_50m_50w(build_spectrograms):
 
     idx1, idx2 = next(shuffle_split.split(not_reynolds, groups=not_reynolds.speaker_id))
     train_set, dev_set = df.iloc[idx1], df.iloc[idx2]
+    train_set.reset_index(drop=True)
+    dev_set.reset_index(drop=True)
 
     return train_set, dev_set
