@@ -3,6 +3,7 @@ files:
  vox_celeb_meta: Data/TIMIT/timit_meta.csv
  vox_dev_wav: Data/TIMIT/TRAIN
  vox_test_wav: Data/TIMIT/TEST
+ not_reynolds: Data/TIMIT/speakers_100_50w_50m_not_reynolds.txt
  weights_path: Data/model_weights/model.h5
  log_dir: logs
 
