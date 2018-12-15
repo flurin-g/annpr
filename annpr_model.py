@@ -103,7 +103,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
     annpr.fit_generator(generator=training_generator,
                         epochs=input_data['epochs'],
                         validation_data=val_data,
-                        validation_steps=2,
+                        # ToDo: make dependent on size of dev_set, solve tf issue: validation_steps=2,
                         use_multiprocessing=True,
                         callbacks=callbacks)
 

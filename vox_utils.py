@@ -167,7 +167,8 @@ def get_all_sets(build_spectrograms=False) -> (pd.DataFrame, pd.DataFrame, pd.Da
 
 
 def get_all_sets_50m_50w(build_spectrograms):
-    shuffle_split = GroupShuffleSplit(n_splits=1, test_size=0.2)
+    # ToDo: original config is 0.2: shuffle_split = GroupShuffleSplit(n_splits=1, test_size=0.2)
+    shuffle_split = GroupShuffleSplit(n_splits=1, test_size=0.1)
 
     df = get_dataset(build_spectrograms)
     not_reynolds_ids = pd.read_csv(GLOBAL_CONF['files']['not_reynolds'],
