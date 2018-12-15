@@ -4,6 +4,7 @@ import pickle
 import librosa as lr
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split, GroupShuffleSplit
 from sklearn.preprocessing import LabelEncoder
 
 from definitions import GLOBAL_CONF
@@ -163,3 +164,18 @@ def get_all_sets(build_spectrograms=False) -> (pd.DataFrame, pd.DataFrame, pd.Da
     test_set = df[df.split == TEST]
 
     return train_set, dev_set, test_set
+
+
+def get_all_sets_50m_50w(build_spectrograms):
+    shuffle_split = GroupShuffleSplit(n_splits=1, test_size=0.2)
+
+    df = get_dataset(build_spectrograms)
+    not_reynolds_ids = pd.read_csv(GLOBAL_CONF['files']['not_reynolds'],
+                                   header=None, names=['speaker_id'])
+
+    not_reynolds = df[df['speaker_id'].isin(not_reynolds_ids['speaker_id'])]
+
+    idx1, idx2 = next(shuffle_split.split(not_reynolds, groups=not_reynolds.speaker_id))
+    train_set, dev_set = df.iloc[idx1], df.iloc[idx2]
+
+    return train_set, dev_set
