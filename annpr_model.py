@@ -7,7 +7,7 @@ import numpy as np
 
 from pairwise_kl_divergence import pairwise_kl_divergence
 from data_generator import DataGenerator
-from vox_utils import get_all_sets
+from vox_utils import get_all_sets_50m_50w
 from definitions import TRAIN_CONF, WEIGHTS_PATH, LOG_DIR
 
 INPUT_DIMS = [TRAIN_CONF['input_data']['mel_spectrogram_x'],
@@ -90,7 +90,7 @@ def train_model(create_spectrograms: bool = False, weights_path: str = WEIGHTS_P
     input_data = TRAIN_CONF['input_data']
     batch_size = input_data['batch_size']
 
-    train_set, dev_set, test_set = get_all_sets(create_spectrograms)
+    train_set, dev_set = get_all_sets_50m_50w(create_spectrograms)
 
     training_generator = DataGenerator(train_set, INPUT_DIMS, batch_size)
 
